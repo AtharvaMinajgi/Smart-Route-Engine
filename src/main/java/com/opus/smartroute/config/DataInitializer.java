@@ -1,9 +1,7 @@
 package com.opus.smartroute.config;
 
 import com.opus.smartroute.entity.Route;
-import com.opus.smartroute.entity.WeightConfig;
 import com.opus.smartroute.repository.RouteRepository;
-import com.opus.smartroute.repository.WeightConfigRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -15,13 +13,10 @@ import java.time.LocalDateTime;
 public class DataInitializer implements CommandLineRunner {
 
     private final RouteRepository routeRepository;
-    private final WeightConfigRepository weightConfigRepository;
 
     @Override
     public void run(String... args) {
-
         seedRoutes();
-        seedWeights();
     }
 
     private void seedRoutes() {
@@ -60,23 +55,6 @@ public class DataInitializer implements CommandLineRunner {
             routeRepository.save(hdfc);
 
             System.out.println("Default routes seeded.");
-        }
-    }
-
-    private void seedWeights() {
-
-        if (weightConfigRepository.count() == 0) {
-
-            WeightConfig defaultWeights = WeightConfig.builder()
-                    .successWeight(0.6)
-                    .latencyWeight(0.25)
-                    .mdrWeight(0.15)
-                    .lastUpdated(LocalDateTime.now())
-                    .build();
-
-            weightConfigRepository.save(defaultWeights);
-
-            System.out.println("Default weight configuration seeded.");
         }
     }
 }

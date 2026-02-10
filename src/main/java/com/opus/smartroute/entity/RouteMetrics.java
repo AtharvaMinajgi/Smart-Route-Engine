@@ -1,6 +1,6 @@
 package com.opus.smartroute.entity;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -39,5 +39,5 @@ public class RouteMetrics {
 
 	    private Integer totalSamples;
 
-	    private LocalDate lastUpdated;
+	    private LocalDateTime lastUpdated;
 }
