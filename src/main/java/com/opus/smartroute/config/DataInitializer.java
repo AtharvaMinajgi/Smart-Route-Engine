@@ -1,6 +1,8 @@
 package com.opus.smartroute.config;
 
 import com.opus.smartroute.entity.Route;
+import com.opus.smartroute.entity.RouteBanditStats;
+import com.opus.smartroute.repository.RouteBanditStatsRepository;
 import com.opus.smartroute.repository.RouteRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
@@ -13,10 +15,14 @@ import java.time.LocalDateTime;
 public class DataInitializer implements CommandLineRunner {
 
     private final RouteRepository routeRepository;
+    private final RouteBanditStatsRepository banditStatsRepository;
 
     @Override
     public void run(String... args) {
+
         seedRoutes();
+        seedBanditStats();
+        resetBanditStats();
     }
 
     private void seedRoutes() {
@@ -56,5 +62,36 @@ public class DataInitializer implements CommandLineRunner {
 
             System.out.println("Default routes seeded.");
         }
+    }
+
+    private void seedBanditStats() {
+
+        routeRepository.findAll().forEach(route -> {
+
+            if (banditStatsRepository.findByRoute(route).isEmpty()) {
+
+                RouteBanditStats stats = RouteBanditStats.builder()
+                        .route(route)
+                        .alpha(1.0) // Initial prior
+                        .beta(1.0)  // Initial prior
+                        .build();
+
+                banditStatsRepository.save(stats);
+            }
+        });
+
+        System.out.println("Bandit stats initialized.");
+    }
+    
+    private void resetBanditStats() {
+
+        banditStatsRepository.findAll().forEach(stats -> {
+            stats.setAlpha(1);
+            stats.setBeta(1);
+        });
+
+        banditStatsRepository.saveAll(banditStatsRepository.findAll());
+
+        System.out.println("Bandit stats reset.");
     }
 }

@@ -15,59 +15,68 @@ public class SimulationService {
 
     public SimulationResultDTO simulate(Route route, double amount) {
 
+        double baseSuccessProbability = getBaseSuccessProbability(route);
         int latency = generateLatency(route);
-        TransactionResult result;
-        FailureType failureType = FailureType.NONE;
 
-        // Timeout condition (based on latency)
+        // 1️⃣ Amount effect (high value = slightly more risky)
+        if (amount > 100000) {
+            baseSuccessProbability -= 0.10;
+        } else if (amount > 50000) {
+            baseSuccessProbability -= 0.05;
+        }
+
+        // 2️⃣ Latency effect (slow route = slightly more failure prone)
         if (latency > 1800) {
-            result = TransactionResult.TIMEOUT;
-            failureType = FailureType.ROUTE_TIMEOUT;
-        }
-        else {
-            //️Random issuer decline (5% chance)
-            if (random.nextDouble() < 0.05) {
-                result = TransactionResult.DECLINE;
-                failureType = FailureType.ISSURE_DECLINE;
-            }
-            // Random customer error (3% chance)
-            else if (random.nextDouble() < 0.03) {
-                result = TransactionResult.CUSTOMER_ERROR;
-                failureType = FailureType.WRONG_PIN;
-            }
-            else {
-                result = TransactionResult.SUCCESS;
-            }
+            baseSuccessProbability -= 0.07;
+        } else if (latency > 1400) {
+            baseSuccessProbability -= 0.03;
         }
 
-        return SimulationResultDTO.builder()
-                .result(result)
-                .failureType(failureType)
-                .latencyMs(latency)
-                .build();
+        // Keep probability within bounds
+        baseSuccessProbability = Math.max(0.05, Math.min(0.99, baseSuccessProbability));
+
+        boolean success = random.nextDouble() < baseSuccessProbability;
+
+        if (success) {
+            return SimulationResultDTO.builder()
+                    .result(TransactionResult.SUCCESS)
+                    .failureType(FailureType.NONE)
+                    .latencyMs(latency)
+                    .build();
+        } else {
+            return SimulationResultDTO.builder()
+                    .result(TransactionResult.DECLINE)
+                    .failureType(FailureType.ISSUER_DECLINE)
+                    .latencyMs(latency)
+                    .build();
+        }
+    }
+
+    private double getBaseSuccessProbability(Route route) {
+
+        switch (route.getName()) {
+            case "AXIS":
+                return 0.92;
+            case "ICICI":
+                return 0.85;
+            case "HDFC":
+                return 0.75;
+            default:
+                return 0.80;
+        }
     }
 
     private int generateLatency(Route route) {
 
-        int baseLatency;
-
         switch (route.getName()) {
             case "AXIS":
-                baseLatency = 900;
-                break;
+                return 800 + random.nextInt(400);   // 800–1200 ms
             case "ICICI":
-                baseLatency = 1100;
-                break;
+                return 1000 + random.nextInt(600);  // 1000–1600 ms
             case "HDFC":
-                baseLatency = 800;
-                break;
+                return 1200 + random.nextInt(800);  // 1200–2000 ms
             default:
-                baseLatency = 1000;
+                return 1000 + random.nextInt(600);
         }
-
-        // Add random fluctuation
-        int fluctuation = random.nextInt(600); // 0–600ms
-
-        return baseLatency + fluctuation;
     }
 }
