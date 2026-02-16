@@ -2,17 +2,8 @@ package com.opus.smartroute.entity;
 
 import java.time.LocalDateTime;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
 @Table(name = "routes")
@@ -22,24 +13,40 @@ import lombok.Setter;
 @NoArgsConstructor
 @Builder
 public class Route {
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-	
-	@Column(nullable = false, unique = true)
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    // Route Name (AXIS, ICICI, HDFC)
+    @Column(nullable = false, unique = true)
     private String name;
 
+    // Network (VISA, MASTERCARD)
     @Column(nullable = false)
     private String network;
 
+    // Merchant Discount Rate (cost factor)
     @Column(nullable = false)
     private Double baseMdr;
 
+    // Whether route is active
     @Column(nullable = false)
     private Boolean isActive = true;
 
+    // Base approval probability (0.0 - 1.0)
+    @Column(nullable = false)
+    private Double baseSuccessRate;
+
+    // Base latency in milliseconds
+    @Column(nullable = false)
+    private Integer baseLatencyMs;
+
+    // Risk factor (0.0 - 1.0)
+    // Higher value → more likely to decline
+    @Column(nullable = false)
+    private Double riskFactor;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    
 }

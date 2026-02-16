@@ -1,8 +1,14 @@
 package com.opus.smartroute.enums;
 
 public enum FailureType {
-	ROUTE_TIMEOUT,
-	ISSUER_DECLINE,
-	WRONG_PIN,
-	NONE
+
+    NONE,
+
+    ISSUER_DECLINE,
+
+    ROUTE_TIMEOUT,
+
+    FRAUD_BLOCK,
+
+    SYSTEM_ERROR
 }

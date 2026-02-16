@@ -22,7 +22,6 @@ public class DataInitializer implements CommandLineRunner {
 
         seedRoutes();
         seedBanditStats();
-        resetBanditStats();
     }
 
     private void seedRoutes() {
@@ -33,6 +32,9 @@ public class DataInitializer implements CommandLineRunner {
                     .name("AXIS")
                     .network("VISA")
                     .baseMdr(0.018)
+                    .baseSuccessRate(0.92)
+                    .baseLatencyMs(900)
+                    .riskFactor(0.05)
                     .isActive(true)
                     .createdAt(LocalDateTime.now())
                     .updatedAt(LocalDateTime.now())
@@ -42,6 +44,9 @@ public class DataInitializer implements CommandLineRunner {
                     .name("ICICI")
                     .network("VISA")
                     .baseMdr(0.021)
+                    .baseSuccessRate(0.85)
+                    .baseLatencyMs(1200)
+                    .riskFactor(0.08)
                     .isActive(true)
                     .createdAt(LocalDateTime.now())
                     .updatedAt(LocalDateTime.now())
@@ -51,6 +56,9 @@ public class DataInitializer implements CommandLineRunner {
                     .name("HDFC")
                     .network("VISA")
                     .baseMdr(0.020)
+                    .baseSuccessRate(0.75)
+                    .baseLatencyMs(1500)
+                    .riskFactor(0.12)
                     .isActive(true)
                     .createdAt(LocalDateTime.now())
                     .updatedAt(LocalDateTime.now())
@@ -81,17 +89,5 @@ public class DataInitializer implements CommandLineRunner {
         });
 
         System.out.println("Bandit stats initialized.");
-    }
-    
-    private void resetBanditStats() {
-
-        banditStatsRepository.findAll().forEach(stats -> {
-            stats.setAlpha(1);
-            stats.setBeta(1);
-        });
-
-        banditStatsRepository.saveAll(banditStatsRepository.findAll());
-
-        System.out.println("Bandit stats reset.");
     }
 }

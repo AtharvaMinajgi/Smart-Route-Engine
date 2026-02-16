@@ -9,8 +9,13 @@ import lombok.Data;
 public class RoutingDecisionDTO {
 
     private Route route;
+
+    // ML predicted success probability
+    private double mlProbability;
+
+    // Thompson sampling score
+    private double banditScore;
+
+    // Final hybrid score
     private double score;
-    private double successRate;
-    private double normalizedLatency;
-    private double mdr;
 }

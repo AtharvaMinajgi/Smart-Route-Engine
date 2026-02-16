@@ -8,8 +8,15 @@ import lombok.Data;
 public class TransactionResponseDTO {
 
     private String selectedRoute;
+
+    // Final hybrid score
     private Double score;
+
+    // Explainable AI components
+    private Double mlProbability;
+    private Double banditScore;
+
     private String result;
     private String failureType;
-    private int latencyMs;
+    private Integer latencyMs;
 }

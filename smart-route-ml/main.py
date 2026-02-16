@@ -32,6 +32,15 @@ class PredictRequest(BaseModel):
     latency: int
 
 
+#-------------TEST ML---------------
+model_trained = False
+
+@app.get("/status")
+def status():
+    return {"model_trained": model_trained}
+
+
+
 # -------- Training Endpoint --------
 
 @app.post("/train")
@@ -70,6 +79,9 @@ def train_model(request: TrainRequest):
     model.fit(X, y)
 
     accuracy = model.score(X, y)
+    
+    global model_trained
+    model_trained = True
 
     return {
         "message": "Model trained successfully",
@@ -98,3 +110,5 @@ def predict(request: PredictRequest):
     return {
         "success_probability": round(float(probability), 4)
     }
+    
+

@@ -64,4 +64,18 @@ public class MLClientService {
 
         return ((Number) response.get("success_probability")).doubleValue();
     }
+    
+    public boolean isModelReady() {
+        try {
+            String statusUrl = "http://127.0.0.1:8000/status";
+            Map<String, Object> response = restTemplate.getForObject(statusUrl, Map.class);
+
+            if (response == null) return false;
+
+            return Boolean.TRUE.equals(response.get("model_trained"));
+
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }
