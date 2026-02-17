@@ -7,6 +7,8 @@ from sklearn.preprocessing import OneHotEncoder
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 
+# uvicorn main:app --reload
+
 app = FastAPI()
 
 # Global model (stored in memory)

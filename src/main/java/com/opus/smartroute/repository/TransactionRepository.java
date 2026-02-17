@@ -13,4 +13,6 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     List<Transaction> findTop100ByRouteOrderByCreatedAtDesc(Route route);
 
     List<Transaction> findByRoutingType(RoutingType routingType);
+    
+    List<Transaction> findTop10ByOrderByCreatedAtDesc();
 }

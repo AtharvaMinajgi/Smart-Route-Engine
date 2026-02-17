@@ -16,4 +16,7 @@ public class ComparisonResultDTO {
     private double intelligentAvgLatency;
 
     private double improvementPercentage;
+
+    //for frontend
+    private String summary;
 }

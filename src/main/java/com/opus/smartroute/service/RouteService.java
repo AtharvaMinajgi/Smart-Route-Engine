@@ -40,4 +40,8 @@ public class RouteService {
 
         return routeRepository.save(route);
     }
+    public double calculateEffectiveSuccess(Route route) {
+        double effective = route.getBaseSuccessRate() - route.getRiskFactor();
+        return Math.max(0.05, Math.min(0.99, effective));
+    }
 }
